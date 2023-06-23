@@ -30,7 +30,9 @@ auth.Token = async (data) => {
     } else {
       return { status: false, result: "credenciales incorrectas" };
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log(err)
+  }
 };
 
 auth.RenewalToken= async(data,datatoken)=>{
