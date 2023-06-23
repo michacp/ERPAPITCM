@@ -71,7 +71,7 @@ UserController.deleteuser = async (req, res) => {
 
 
 UserController.login = async (req, res) => {
- 
+ console.log("1")
   const datos = {
     name_user: req.body.usuario,
     pasword_user: req.body.pasword,

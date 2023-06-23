@@ -5,6 +5,7 @@ const Find = require("../models/UserModels");
 const bq = require('../helpers/bcryptjs')
 
 auth.Token = async (data) => {
+  console.log("2")
   try {
     const buscar = await Find.find(data);
     //console.log(data)
