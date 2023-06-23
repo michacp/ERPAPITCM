@@ -8,7 +8,7 @@ auth.Token = async (data) => {
   console.log("2")
   try {
     const buscar = await Find.find(data);
-    //console.log(data)
+    console.log(buscar)
     if (buscar) {
       const pass = bq.verifyPassword(data.pasword_user, buscar[0].pasword_user);
       if (pass) {
