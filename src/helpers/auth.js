@@ -18,7 +18,7 @@ auth.Token = async (data) => {
           email: buscar[0].email_user,
         };
         var privateKey = fs.readFileSync("src/keys/jwtRS256.key");
-        console.log(privateKey)
+        console.log(privateKey,"buffer")
         const token = jwt.sign({ dats }, privateKey, {
           algorithm: "RS256",
           expiresIn: "1h",
