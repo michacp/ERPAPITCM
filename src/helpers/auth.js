@@ -17,7 +17,7 @@ auth.Token = async (data) => {
           firstname: buscar[0].first_name_user,
           email: buscar[0].email_user,
         };
-        var privateKey = fs.readFileSync("./src/helpers/keys/jwtRS256.key");
+        var privateKey = fs.readFileSync("keys/jwtRS256.key");
         console.log(privateKey,"buffer")
         const token = jwt.sign({ dats }, privateKey, {
           algorithm: "RS256",
@@ -49,7 +49,7 @@ if (data.user==datatoken.dats.nombre){
         firstname: buscar[0].first_name_user,
         email: buscar[0].email_user,
       };
-      var privateKey = fs.readFileSync("./src/helpers/keys/jwtRS256.key");
+      var privateKey = fs.readFileSync("keys/jwtRS256.key");
       const token = jwt.sign({ dats }, privateKey, {
         algorithm: "RS256",
         expiresIn: "1h",
@@ -81,7 +81,7 @@ auth.logged = (req, res, next) => {
     
     req.token = bearerToken;
     //console.log(req.body)
-    var cert = fs.readFileSync("./src/helpers/keys/jwtRS256.key.pub");
+    var cert = fs.readFileSync("keys/jwtRS256.key.pub");
     jwt.verify(req.token, cert, (error, authData) => {
       if (error) {
        
