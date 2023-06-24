@@ -79,7 +79,7 @@ UserController.login = async (req, res) => {
   //console.log(datos)
   const s = await Token.Token(datos);
   // const app = await App.saveservers(req.body);
-  console.log(s);
+ // console.log(s);
   res.json(s);
 };
 module.exports = UserController;
