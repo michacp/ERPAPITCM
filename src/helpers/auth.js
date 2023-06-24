@@ -4,19 +4,19 @@ var fs = require("fs");
 const Find = require("../models/UserModels");
 const bq = require('../helpers/bcryptjs')
 
-function listarrutas(){
-const fs = require('fs');
+// function listarrutas(){
+// const fs = require('fs');
 
-fs.readdir("./", function (err, archivos) {
-if (err) {
-onError(err);
-return;
-}
-console.log(archivos);
-});}
+// fs.readdir("./", function (err, archivos) {
+// if (err) {
+// onError(err);
+// return;
+// }
+// console.log(archivos);
+// });}
 
 auth.Token = async (data) => {
-  listarrutas()
+ // listarrutas()
  // console.log("2")
   try {
     const buscar = await Find.find(data);
@@ -63,7 +63,7 @@ if (data.user==datatoken.dats.nombre){
         firstname: buscar[0].first_name_user,
         email: buscar[0].email_user,
       };
-      var privateKey = fs.readFileSync("../helpers/jwtRS256.key");
+      var privateKey = fs.readFileSync("./keys/jwtRS256.key");
       const token = jwt.sign({ dats }, privateKey, {
         algorithm: "RS256",
         expiresIn: "1h",
@@ -95,7 +95,7 @@ auth.logged = (req, res, next) => {
     
     req.token = bearerToken;
     //console.log(req.body)
-    var cert = fs.readFileSync("./src/helpers/jwtRS256.key");
+    var cert = fs.readFileSync("./keys/jwtRS256.key");
     jwt.verify(req.token, cert, (error, authData) => {
       if (error) {
        
