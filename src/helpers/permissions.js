@@ -5,7 +5,7 @@ const findgroup=require("../models/UserModels")
 
 permissions.isadmin =async (req, res, next) => {
   
-    var cert = fs.readFileSync("src/keys/jwtRS256.key.pub");
+    var cert = fs.readFileSync("./keys/jwtRS256.key.pub");
     jwt.verify(req.token, cert,async (error, authData) => {
         if (error) {
             res.sendStatus(403);
