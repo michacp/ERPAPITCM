@@ -94,7 +94,6 @@ Servesh.get = async (data) => {
 
 Servesh.getby = async (data) => {
   try {
-    // console.log(data)
     var findby = data.findlike;
     var myAggregate;
     var page = data.pagination;
@@ -116,6 +115,14 @@ Servesh.getby = async (data) => {
             from: "states",
             localField: "state_server",
             foreignField: "_id",
+            pipeline: [
+              {
+                $project: {
+                  _id: 1,
+                  name: 1,
+                },
+              },
+            ],
             as: "stateservers",
           },
         },
@@ -125,11 +132,26 @@ Servesh.getby = async (data) => {
             from: "branches",
             localField: "branches_id",
             foreignField: "_id",
+            pipeline: [
+              {
+                $project: {
+                  _id: 1,
+                  name: 1,
+                },
+              },
+            ],
             as: "branches",
           },
         },
         { $unwind: "$branches" },
-
+        {
+          $project: {
+            branches: 1,
+            stateservers: 1,
+            name_server: 1,
+            _id: 1,
+          },
+        },
         { $sort: { order_number: -1 } },
         {
           $facet: {
@@ -141,6 +163,130 @@ Servesh.getby = async (data) => {
           },
         },
       ]);
+    } else if (data.allclients == 1) {
+      myAggregate = await modelserverusers.aggregate([
+        {
+          $match: {
+            name_server: { $regex: findby },
+          },
+        },
+        {
+          $lookup: {
+            from: "states",
+            localField: "state_server",
+            foreignField: "_id",
+            pipeline: [
+              {
+                $project: {
+                  _id: 1,
+                  name: 1,
+                },
+              },
+            ],
+            as: "stateservers",
+          },
+        },
+        { $unwind: "$stateservers" },
+        {
+          $project: {
+            stateservers: 1,
+            name_server: 1,
+            branches_id: 1,
+            _id: 1,
+          },
+        },
+        { $sort: { order_number: -1 } },
+        {
+          $facet: {
+            metadata: [
+              { $count: "total" },
+              { $addFields: { page: Number(page) } },
+            ],
+            data: [{ $skip: skip }, { $limit: numPerPage }], // add projection here wish you re-shape the docs
+          },
+        },
+      ]);
+      myAggregate1 = await modelserverusers.aggregate([
+        {
+          $match: {
+            name_server: { $regex: findby },
+          },
+        },
+        {
+          $lookup: {
+            from: "states",
+            localField: "state_server",
+            foreignField: "_id",
+            pipeline: [
+              {
+                $project: {
+                  _id: 1,
+                  name: 1,
+                },
+              },
+            ],
+            as: "stateservers",
+          },
+        },
+        { $unwind: "$stateservers" },
+        {
+          $lookup: {
+            from: "branches",
+            localField: "branches_id",
+            foreignField: "_id",
+            pipeline: [
+              {
+                $project: {
+                  _id: 1,
+                  name: 1,
+                },
+              },
+            ],
+            as: "branches",
+          },
+        },
+        { $unwind: "$branches" },
+        {
+          $project: {
+            branches: 1,
+            stateservers: 1,
+            name_server: 1,
+            _id: 1,
+          },
+        },
+        { $sort: { order_number: -1 } },
+        {
+          $facet: {
+            metadata: [
+              { $count: "total" },
+              { $addFields: { page: Number(page) } },
+            ],
+            data: [{ $skip: skip }, { $limit: numPerPage }], // add projection here wish you re-shape the docs
+          },
+        },
+      ]);
+      var doubles =  myAggregate[0].data.map(  function (x) {
+        const eux = myAggregate1[0].data.map(function (x1) {
+           // console.log(x1.branches._id.toString(), x.branches_id.toString());
+            if (x.branches_id.toString() == x1.branches._id.toString()) {
+              return true
+            }
+          })
+          
+
+        if (!eux[0]) {
+          x.branches = {
+            _id: new ObjectId("000000000000000000000000"),
+            name: "UNASSIGNED",
+          };
+
+          return x;
+        } else {
+          return null;
+        }
+      });
+    doubles=  doubles.filter(el => el )
+      myAggregate[0].data=  doubles
     } else {
       myAggregate = await modelserverusers.aggregate([
         {
@@ -154,6 +300,14 @@ Servesh.getby = async (data) => {
             from: "states",
             localField: "state_server",
             foreignField: "_id",
+            pipeline: [
+              {
+                $project: {
+                  _id: 1,
+                  name: 1,
+                },
+              },
+            ],
             as: "stateservers",
           },
         },
@@ -163,11 +317,26 @@ Servesh.getby = async (data) => {
             from: "branches",
             localField: "branches_id",
             foreignField: "_id",
+            pipeline: [
+              {
+                $project: {
+                  _id: 1,
+                  name: 1,
+                },
+              },
+            ],
             as: "branches",
           },
         },
         { $unwind: "$branches" },
-
+        {
+          $project: {
+            branches: 1,
+            stateservers: 1,
+            name_server: 1,
+            _id: 1,
+          },
+        },
         { $sort: { order_number: -1 } },
         {
           $facet: {
@@ -183,7 +352,7 @@ Servesh.getby = async (data) => {
     var numero_de_paginas;
     var total;
     if (myAggregate[0].metadata.length == 0) {
-      numero_de_paginas = Math.trunc(0 / numPerPage) + 1;
+      numero_de_paginas =  Math.trunc(0 / numPerPage) + 1;
       total = 0;
     } else {
       numero_de_paginas =
@@ -200,7 +369,7 @@ Servesh.getby = async (data) => {
       consumo: myAggregate[0].data,
     };
     // console.log(respuesta);
-    return respuesta;
+    return  respuesta;
   } catch (err) {
     console.log(err);
     return false;
@@ -240,15 +409,7 @@ Servesh.find = async (data) => {
         },
       },
       { $unwind: "$stateservers" },
-      {
-        $lookup: {
-          from: "branches",
-          localField: "branches_id",
-          foreignField: "_id",
-          as: "branches",
-        },
-      },
-      { $unwind: "$branches" },
+
     ]);
     //console.log(myAggregate)
     return myAggregate;
@@ -260,7 +421,6 @@ Servesh.find = async (data) => {
 
 Servesh.edit = async (data, id) => {
   try {
-
     delete data._id;
     //console.log(data)
     const insertar = await modelserverusers.findOneAndUpdate(
@@ -268,7 +428,7 @@ Servesh.edit = async (data, id) => {
       {
         name_server: data.name_server,
         state_server: new ObjectId(data.state_server),
-        branches_id: new ObjectId(data.branches_id)
+        branches_id: new ObjectId(data.branches_id),
       },
       {
         returnOriginal: false,

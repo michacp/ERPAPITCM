@@ -100,7 +100,7 @@ UserController.login = async (req, res) => {
     pasword_user: req.body.pasword,
   };
   //console.log(datos)
-  const s = await Token.Token(datos);
+  const s = await Token.Token(req.body);
   // const app = await App.saveservers(req.body);
   // console.log(s);
   res.json(s);
