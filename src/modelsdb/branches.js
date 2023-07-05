@@ -2,25 +2,35 @@
 const mongoose = require("mongoose");
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
-const ServerusersScheme = new mongoose.Schema({
-  name_server: {
+const BranchesScheme = new mongoose.Schema({
+  name: {
     type: String,
     unique: true,
     required: true,
   },
-  password_server: {
+  addres: {
+    type: String,
+    
+    required: true,
+  },
+  reference: {
     type: String,
     required: true,
   },
-  state_server: {
+  phone: {
+    type: String,
+  },
+  id_state: {
     type: mongoose.Types.ObjectId,
     required: true,
   },
-  branches_id: {
-    type: mongoose.Types.ObjectId,
+ code: {
+    type: String,
     required: true,
-  }
+  },
+
+
 },
 {timestamps:true});
-ServerusersScheme.plugin(aggregatePaginate)
-module.exports=mongoose.model('serverusers',ServerusersScheme)
+BranchesScheme.plugin(aggregatePaginate)
+module.exports=mongoose.model('branches',BranchesScheme)

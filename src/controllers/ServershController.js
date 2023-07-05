@@ -14,7 +14,11 @@ ServershController.liststate = async (req, res) => {
   // console.log(server)
   res.json(state);
 };
-
+ServershController.listbranches = async (req, res) => {
+  const state = await Serversh.listbranches();
+  // console.log(server)
+  res.json(state);
+};
 ServershController.find = async (req, res) => {
 //  console.log(req.body)
   const server = await Serversh.find(req.body.id);
@@ -32,9 +36,9 @@ const server = await Serversh.getby(req.body.datapage);
 ServershController.edit = async (req, res) => {
   delete req.body.token;
   delete req.body.name;
- // console.log(req.body._id)
-  const editserver = await Serversh.edit(req.body, req.body._id);
-  // console.log(editserver)
+ console.log(req.body)
+  const editserver =await Serversh.edit(req.body, req.body._id);
+ 
   if (editserver) {
     res.json({ status: "ok", mensaje: "dato modificado" });
   } else {

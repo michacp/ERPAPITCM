@@ -12,6 +12,7 @@ routes.post("/editserversh",logged,isadmin,ServershCotroller.edit);
 routes.post("/newserversh",logged,isadmin,ServershCotroller.new);
 routes.post("/filterby",logged,isadmin, ServershCotroller.findby );
 routes.post("/deleteserversh",logged,isadmin, ServershCotroller.delete);
+routes.post("/listbranchesserversh",logged,isadmin, ServershCotroller.listbranches)
 
 
 module.exports = routes;
