@@ -36,6 +36,7 @@ auth.Token = async (data) => {
           algorithm: "RS256",
           expiresIn: "1h",
         });
+        delete buscar[0].pasword_user
         return { status: true, result: { token: token,user: buscar[0] } };
       } else {
         return { status: false, result: "credenciales incorrectas" };
@@ -64,11 +65,13 @@ if (data1==datatoken.dats.user){
         name: buscar[0].employees.first_name1 + " "+buscar[0].employees.last_name1,
         email:buscar[0].employees.email_business
       };
+
       var privateKey = fs.readFileSync(key.key)//"./keys/jwtRS256.key");
       const token = jwt.sign({ dats }, privateKey, {
         algorithm: "RS256",
         expiresIn: "1h",
       });
+      delete buscar[0].pasword_user
       
       return { estatustoken: true, result: { token: token,user: buscar[0] } };
     }else{
