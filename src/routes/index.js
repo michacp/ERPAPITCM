@@ -12,10 +12,10 @@ routes.get("/", AppController.index);
 routes.post("/listar", AppController.list);
 routes.post("/save",logged,isadmin,AppController.savecli);
 routes.post("/edit", AppController.edit);
-routes.get("/find/:id", AppController.find);
+routes.get("/find", AppController.find);
 routes.post("/delete",logged,isadmin, AppController.deletecli);
 routes.post("/saveserver", AppController.saveserver);
-routes.post("/tokenstate",logged,AppController.tokenstate);
+routes.get("/tokenstate",logged,AppController.tokenstate);
 
 
 

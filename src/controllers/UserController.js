@@ -3,9 +3,10 @@ const UserController = {};
 const Token = require("../helpers/auth");
 const UserModels = require("../models/UserModels");
 const bq = require("../helpers/bcryptjs");
+const aux=require("../config/auxp")
 
 UserController.create = async (req, res) => {
-  //  console.log(req.body);
+ // console.log(req.body);
 
   const saveuser = await UserModels.create(req.body);
   //res.json({esta:"si"})
@@ -16,14 +17,14 @@ UserController.create = async (req, res) => {
   }
 };
 UserController.listemployee = async (req, res) => {
-  //console.log('req.body')
-  const saveuser = await UserModels.getemployees(req.body.datapage);
-  //console.log(saveuser)
+  const data=await aux.convert(req.params)
+  const saveuser = await UserModels.getemployees(data);
   res.json(saveuser);
 };
 UserController.new = async (req, res) => {
+  const data=await aux.convert(req.params)
   //console.log('req.body')
-  const saveuser = await UserModels.getby(req.body.datapage);
+  const saveuser = await UserModels.getby(data);
   //console.log(saveuser)
   res.json(saveuser);
 };
@@ -44,21 +45,22 @@ UserController.getgender = async (req, res) => {
 };
 UserController.findID = async (req, res) => {
   // console.log(req.body)
-  const userone = await UserModels.finbdID(req.body);
+  const userone = await UserModels.finbdID(req.params.id);
+  //console.log(req.params)
   res.json(userone);
 };
 UserController.edituser = async (req, res) => {
-  // console.log(req.body)
+  //console.log(req.body)
   if (
-    req.body.id.pasword_user.length < 6 ||
-    req.body.id.pasword_user1.length < 6
+    req.body.pasword_user.length < 6 ||
+    req.body.pasword_user1.length < 6
   ) {
-    delete req.body.id.pasword_user;
-    delete req.body.id.pasword_user1;
+    delete req.body.pasword_user;
+    delete req.body.pasword_user1;
     const userone = await UserModels.edituser(
-      req.body.id,
-      req.body.id._id,
-      req.body.id.dni
+      req.body,
+      req.body._id,
+      req.body.dni
     );
     if (userone) {
       res.json({ status: "ok", mensaje: "dato guardado" });
@@ -66,13 +68,15 @@ UserController.edituser = async (req, res) => {
       res.json({ status: "error", mensaje: "dato no guardado" });
     }
   } else {
-    if (req.body.id.pasword_user === req.body.id.pasword_user1) {
-      req.body.id.pasword_user = bq.bcrypt(req.body.id.pasword_user);
-      const userone = await UserModels.edituser(
-        req.body.id,
-        req.body.id._id,
+    if (req.body.pasword_user === req.body.pasword_user1) {
+      req.body.pasword_user = bq.bcrypt(req.body.pasword_user);
+     
+      const userone =  await UserModels.edituser(
+         req.body.id,
+       req.body.id._id,
         req.body.id.dni
-      );
+       );
+
       if (userone) {
         res.json({ status: "ok", mensaje: "dato guardado" });
       } else {
@@ -85,7 +89,8 @@ UserController.edituser = async (req, res) => {
 };
 
 UserController.deleteuser = async (req, res) => {
-  const deleteuser = await UserModels.deleteuser(req.body);
+ // console.log(req.params)
+  const deleteuser = await UserModels.deleteuser(req.params);
   if (deleteuser) {
     res.json({ status: "ok", mensaje: "dato eliminado" });
   } else {
@@ -94,7 +99,7 @@ UserController.deleteuser = async (req, res) => {
 };
 
 UserController.login = async (req, res) => {
-  // console.log("1")
+  // console.log(req.body)
 
   //console.log(datos)
   const s = await Token.Token(req.body);

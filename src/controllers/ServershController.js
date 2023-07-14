@@ -1,27 +1,28 @@
 const ServershController = {};
 const Serversh = require("../models/Serversh");
+const aux=require("../config/auxp")
 
 ServershController.list = async (req, res) => {
  //  console.log(req.body)
-
+ const data=await aux.convert(req.params)
   //
-  const servers = await Serversh.getby(req.body.datapage);
+  const servers = await Serversh.getby(data);
   //console.log(servers)
   res.json(servers);
 };
 ServershController.liststate = async (req, res) => {
   const state = await Serversh.getstate();
-  // console.log(server)
+   //console.log(state)
   res.json(state);
 };
 ServershController.listbranches = async (req, res) => {
   const state = await Serversh.listbranches();
-  // console.log(server)
+ //console.log(state )
   res.json(state);
 };
 ServershController.find = async (req, res) => {
-//  console.log(req.body)
-  const server = await Serversh.find(req.body.id);
+  //console.log(req.params.id)
+  const server = await Serversh.find(req.params.id);
   // console.log(server)
   res.json(server);
 };
@@ -34,10 +35,9 @@ const server = await Serversh.getby(req.body.datapage);
 };
 
 ServershController.edit = async (req, res) => {
-  delete req.body.token;
-  delete req.body.name;
- console.log(req.body)
-  const editserver =await Serversh.edit(req.body, req.body._id);
+
+// console.log(req.body)
+  const editserver = await Serversh.edit(req.body, req.body._id);
  
   if (editserver) {
     res.json({ status: "ok", mensaje: "dato modificado" });
@@ -47,25 +47,19 @@ ServershController.edit = async (req, res) => {
 };
 
 ServershController.new = async (req, res) => {
- // console.log(req.body)
-  delete req.body.id_serverusers;
-  delete req.body.name;
  
   const editserver = await Serversh.new(req.body);
-  // // console.log(editserver)
   if (editserver) {
     res.json({ status: "ok", mensaje: "dato guardado" });
   } else {
     res.json({ status: "error", mensaje: "dato no guardado" });
   }
 
-  // console.log(editserver)
-  // res.json({status:"ok"})
 };
 
 ServershController.delete = async (req, res) => {
- // console.log(req.body)
-  const del = await Serversh.delete(req.body._id);
+
+  const del = await Serversh.delete(req.params.id);
 
   if (del) {
     res.json({ status: "ok", mensaje: "dato eliminado" });

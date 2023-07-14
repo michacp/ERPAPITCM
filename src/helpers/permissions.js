@@ -6,16 +6,16 @@ const {key}=require('../config/key')
 
 permissions.isadmin =async (req, res, next) => {
  
-    var cert = fs.readFileSync(key.public)//("./keys/jwtRS256.key.pub");
+    var cert = fs.readFileSync("src/keys/jwtRS256.key.pub")//("./keys/jwtRS256.key.pub");
     //console.log("aqui")
     jwt.verify(req.token, cert,async (error, authData) => {
         if (error) {
             res.sendStatus(403);
           } else {
             const groups=await findgroup.findgroup(authData.dats,'ADMINS')
-             //console.log(authData.dats)
+            //console.log(authData.dats)
             if(groups){
-             delete req.body.token 
+             
               next();
             }else{
              

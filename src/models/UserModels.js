@@ -286,7 +286,7 @@ UserModels.finbdID = async (data) => {
     const myAggregate = await modeluser.aggregate([
       {
         $match: {
-          _id: new ObjectId(data.id),
+          _id: new ObjectId(data),
         },
       },
       {
@@ -475,9 +475,9 @@ UserModels.edituser = async (data, id, dni) => {
 UserModels.deleteuser = async (data) => {
   try {
     //console.log(data)
-    const insertar = await modeluser.deleteOne({ _id: data.id._id });
+    const insertar = await modeluser.deleteOne({ _id: data.id });
     const insertarem = await modelemployee.deleteOne({
-      _id: data.id._idemployee,
+      _id: data.id1,
     });
     const insertar13 = await modeluser_group.deleteMany({
       id_user_user_groups: data.id,
@@ -499,21 +499,133 @@ UserModels.deleteuser = async (data) => {
 
 UserModels.find = async (data) => {
   try {
-    //console.log(data)
-    const finduser = await modeluser.find({ name_user: data.name_user });
+   //console.log(data)
+    // const finduser = await modeluser.find({ name_user: data.name_user });
     // const insertar = await db.query(
     //   "select name_user,first_name_user,pasword_user,email_user from user where name_user=?",
     //   [data.name_user]
     // );
     // console.log(finduser,insertar)
-    if (finduser === "error") {
+
+    const myAggregate = await modeluser.aggregate([
+      {
+        $match: {
+          name_user: data.name_user,
+        },
+      },
+      {
+        $lookup: {
+          from: "user_groups",
+          localField: "_id",
+          foreignField: "id_user_user_groups",
+          pipeline: [
+            {
+              $lookup: {
+                from: "groups",
+                localField: "id_group_user_groups",
+                foreignField: "_id",
+                pipeline: [
+                  {
+                    $project: {
+                      _id: 1,
+                      name: 1,
+                    },
+                  },
+                ],
+                as: "group",
+              },
+            },
+            { $unwind: "$group" },
+            {
+              $project: {
+                _id: 1,
+                group: 1,
+              },
+            },
+          ],
+          as: "user_groups",
+        },
+      },
+      {
+        $lookup: {
+          from: "state_users",
+          localField: "state_user",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $match: {
+                name: "ENABLE",
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+              },
+            },
+          ],
+          as: "state",
+        },
+      },
+      { $unwind: "$state" },
+      {
+        $lookup: {
+          from: "employees",
+          localField: "employees_user",
+          foreignField: "_id",
+          pipeline: [
+            {
+              $lookup: {
+                from: "genders",
+                localField: "gender",
+                foreignField: "_id",
+                pipeline: [
+                  {
+                    $project: {
+                      _id: 1,
+                      name: 1,
+                    },
+                  },
+                ],
+                as: "gender",
+              },
+            },
+            { $unwind: "$gender" },
+            {
+              $project: {
+                first_name1: 1,
+                last_name1: 1,
+                email_business: 1,
+                gender: 1,
+              },
+            },
+          ],
+          as: "employees",
+        },
+      },
+      { $unwind: "$employees" },
+      {
+        $project: {
+          _id: 1,
+          name_user: 1,
+          pasword_user: 1,
+          user_groups: 1,
+          employees: 1,
+        },
+      },
+    ]);
+
+    // respuesta.aggregate
+    // console.log(JSON.stringify(myAggregate));
+
+    if (myAggregate === "error") {
       console.log("ERROR");
     } else {
       // console.log(insertar.length);
-      if (finduser.length === 0) {
+      if (myAggregate.length === 0) {
         return (inser = false);
       } else {
-        return finduser; //insertar;
+        return myAggregate; //insertar;
       }
     }
   } catch (e) {
@@ -533,7 +645,7 @@ UserModels.findgroup = async (data, name) => {
     myAggregate = await modeluser.aggregate([
       {
         $match: {
-          name_user: data.nombre,
+          name_user: data.user,
         },
       },
       {

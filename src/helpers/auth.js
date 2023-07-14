@@ -20,24 +20,23 @@ auth.Token = async (data) => {
  // console.log("2")
   try {
     const buscar = await Find.find(data);
- //   console.log(buscar)
+  // console.log(buscar[0])
     if (buscar) {
       const pass = bq.verifyPassword(data.pasword_user, buscar[0].pasword_user);
       if (pass) {
         dats = {
-          nombre: buscar[0].name_user,
-          firstname: buscar[0].first_name_user,
-          email: buscar[0].email_user,
+          user: buscar[0].name_user,
+          name: buscar[0].employees.first_name1 + " "+buscar[0].employees.last_name1,
+          email:buscar[0].employees.email_business
         };
         var appRoot = process.cwd()
-      //  console.log(appRoot)
+      //console.log(appRoot)
         var privateKey = fs.readFileSync(key.key)//"./keys/jwtRS256.key");
-       
         const token = jwt.sign({ dats }, privateKey, {
           algorithm: "RS256",
           expiresIn: "1h",
         });
-        return { status: true, result: { token: token,user: buscar[0].name_user } };
+        return { status: true, result: { token: token,user: buscar[0] } };
       } else {
         return { status: false, result: "credenciales incorrectas" };
       }
@@ -49,19 +48,21 @@ auth.Token = async (data) => {
   }
 };
 
-auth.RenewalToken= async(data,datatoken)=>{
-  //console.log(datatoken)
-if (data.user==datatoken.dats.nombre){
-  data.name_user=datatoken.dats.nombre
+auth.RenewalToken= async(data1,datatoken)=>{
+ // console.log(data1)
+ 
+if (data1==datatoken.dats.user){
+  let data={name_user:datatoken.dats.user}
   const buscar = await Find.find(data)
+  //console.log(buscar)
   if(buscar){
     const time=(datatoken.exp-Math.floor(Date.now() / 1000))/60
    //console.log(time)
     if(time<30){
       dats = {
-        nombre: buscar[0].name_user,
-        firstname: buscar[0].first_name_user,
-        email: buscar[0].email_user,
+        user: buscar[0].name_user,
+        name: buscar[0].employees.first_name1 + " "+buscar[0].employees.last_name1,
+        email:buscar[0].employees.email_business
       };
       var privateKey = fs.readFileSync(key.key)//"./keys/jwtRS256.key");
       const token = jwt.sign({ dats }, privateKey, {
@@ -69,7 +70,7 @@ if (data.user==datatoken.dats.nombre){
         expiresIn: "1h",
       });
       
-      return { estatustoken: 'ok', result: { token: token,user: buscar[0].name_user } };
+      return { estatustoken: 'ok', result: { token: token,user: buscar[0] } };
     }else{
       return { estatustoken: 'ok', result: false};
     }
@@ -85,11 +86,11 @@ if (data.user==datatoken.dats.nombre){
 }
 auth.logged = (req, res, next) => {
  // console.log("aaaa",req.body)
-// console.log(req.headers)
-  //const bearerHeader = req.headers["authorization"];
- const bearerHeader = req.body.token;
  
- //console.log(req.body.token)
+const bearerHeader = req.headers["authorization"];
+// const bearerHeader = req.body.token;
+ 
+ //console.log(req.headers)
   if (typeof bearerHeader !== "undefined") {
   const bearerToken = bearerHeader.split(" ")[1];
     
@@ -102,7 +103,7 @@ auth.logged = (req, res, next) => {
         res.json({estatustoken:'error'});
       } else {
         req.toke= authData
-        
+       // console.log('aqui')
         
         next();
         

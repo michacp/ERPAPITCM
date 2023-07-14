@@ -1,9 +1,11 @@
 const BranchesController = {};
 const Branches = require("../models/BranchesModel");
+const aux=require("../config/auxp")
 
 BranchesController.list = async (req, res) => {
-  // console.log(req.body);
-  const statebranches = await Branches.getby(req.body.datapage);
+ // console.log(req.params)
+ const data=await aux.convert(req.params)
+  const statebranches = await Branches.getby(data);
   //console.log(JSON.stringify(statebranches))
   res.json(statebranches);
 };
@@ -17,8 +19,8 @@ BranchesController.liststate = async (req, res) => {
 };
 
 BranchesController.new = async (req, res) => {
-  // console.log(req.body)
-  const branches = await Branches.new(req.body);
+   
+  const branches =await Branches.new(req.body);
   if (branches) {
     res.json({ status: "ok", mensaje: "dato guardado" });
   } else {
@@ -27,7 +29,7 @@ BranchesController.new = async (req, res) => {
 };
 BranchesController.find = async (req, res) => {
   try {
-    const statebranches = await Branches.find(req.body.id);
+    const statebranches = await Branches.find(req.params.id);
     res.json(statebranches);
   } catch (err) {
     console.log(err);
@@ -38,8 +40,8 @@ BranchesController.find = async (req, res) => {
 };
 BranchesController.edit = async (req, res) => {
   try {
-    // console.log(req.body)
-    const userone = await Branches.edit(req.body.id, req.body.id._id);
+   // console.log(req.body)
+    const userone = await Branches.edit(req.body, req.body._id);
     if (userone) {
       res.json({ status: "ok", mensaje: "dato guardado" });
     } else {
@@ -51,7 +53,8 @@ BranchesController.edit = async (req, res) => {
 };
 
 BranchesController.delete = async (req, res) => {
-  const deletebranch = await Branches.delete(req.body);
+  //console.log(req.params.id)
+  const deletebranch = await Branches.delete(req.params.id);
   if (deletebranch) {
     res.json({ status: "ok", mensaje: "dato eliminado" });
   } else {
