@@ -70,17 +70,17 @@ if (data1==datatoken.dats.user){
         expiresIn: "1h",
       });
       
-      return { estatustoken: 'ok', result: { token: token,user: buscar[0] } };
+      return { estatustoken: true, result: { token: token,user: buscar[0] } };
     }else{
-      return { estatustoken: 'ok', result: false};
+      return { estatustoken: true, result: false};
     }
      
   }else{
-    return { estatustoken: 'error', result: "credenciales incorrectas" }
+    return { estatustoken: false, result: "credenciales incorrectas" }
   }
   
 }else{
-  return { estatustoken: 'error', result: "credenciales incorrectas" }
+  return { estatustoken: false, result: "credenciales incorrectas" }
 }
 
 }
@@ -99,8 +99,8 @@ const bearerHeader = req.headers["authorization"];
     var cert = fs.readFileSync(key.public)//"./keys/jwtRS256.key");
     jwt.verify(req.token, cert, (error, authData) => {
       if (error) {
-       console.log(error)
-        res.json({estatustoken:'error'});
+      // console.log(error)
+        res.json({estatustoken:false});
       } else {
         req.toke= authData
        // console.log('aqui')
@@ -114,7 +114,7 @@ const bearerHeader = req.headers["authorization"];
     });
   } else {
   
-    res.json({estatustoken:'error'});
+    res.json({estatustoken:false});
   }
 
 

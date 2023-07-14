@@ -19,7 +19,7 @@ permissions.isadmin =async (req, res, next) => {
               next();
             }else{
              
-              res.send({ status: "error,", result: "No tienes permiso" }) ;
+              res.send({ status: true, result: "No tienes permiso" }) ;
             }
            // console.log()
             
