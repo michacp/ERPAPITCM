@@ -6,7 +6,7 @@ const {key}=require('../config/key')
 
 permissions.isadmin =async (req, res, next) => {
  
-    var cert = fs.readFileSync("src/keys/jwtRS256.key.pub")//("./keys/jwtRS256.key.pub");
+    var cert = fs.readFileSync(key.public)//("./keys/jwtRS256.key.pub");
     //console.log("aqui")
     jwt.verify(req.token, cert,async (error, authData) => {
         if (error) {
