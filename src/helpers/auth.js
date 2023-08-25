@@ -34,18 +34,19 @@ auth.Token = async (data) => {
         var privateKey = fs.readFileSync(key.key)//"./keys/jwtRS256.key");
         const token = jwt.sign({ dats }, privateKey, {
           algorithm: "RS256",
-          expiresIn: "1h",
+          expiresIn:"1h",
         });
         delete buscar[0].pasword_user
-        return { status: true, result: { token: token,user: buscar[0] } };
+        return  {token: token,user: buscar[0] } ;
       } else {
-        return { status: false, result: "credenciales incorrectas" };
+        return  false
       }
     } else {
-      return { status: false, result: "credenciales incorrectas" };
+      return  false
     }
   } catch (err) {
     console.log(err)
+    return  false
   }
 };
 
@@ -75,15 +76,15 @@ if (data1==datatoken.dats.user){
       
       return { estatustoken: true, result: { token: token,user: buscar[0] } };
     }else{
-      return { estatustoken: true, result: false};
+      return true
     }
      
   }else{
-    return { estatustoken: false, result: "credenciales incorrectas" }
+    return false
   }
   
 }else{
-  return { estatustoken: false, result: "credenciales incorrectas" }
+  return false
 }
 
 }
@@ -102,23 +103,19 @@ const bearerHeader = req.headers["authorization"];
     var cert = fs.readFileSync(key.public)//"./keys/jwtRS256.key");
     jwt.verify(req.token, cert, (error, authData) => {
       if (error) {
-      // console.log(error)
-        res.json({estatustoken:false});
-      } else {
-        req.toke= authData
-       // console.log('aqui')
-        
-        next();
-        
-        //res.json(authData)
-        //const app = await App.get();
-        //
-      }
-    });
-  } else {
-  
-    res.json({estatustoken:false});
-  }
+        //console.log(error)
+        res.statusMessage = "NECESITA INICIAR SESIÓN";
+        res.sendStatus(401);
+        // res.json({estatustoken:false});
+       } else {
+         req.toke= authData;
+          next();
+       }
+     });
+   } else {
+     res.statusMessage = "NECESITA INICIAR SESIÓN";
+     res.sendStatus(401);
+   }
 
 
 };

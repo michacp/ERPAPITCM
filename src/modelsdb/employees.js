@@ -5,18 +5,22 @@ const EmployeesScheme = new mongoose.Schema(
   {
     first_name1: {
       type: String,
+      uppercase: true,
       required: true,
     },
     first_name2: {
       type: String,
+      uppercase: true,
      
     },
     last_name1: {
       type: String,
+      uppercase: true,
       required: true,
     },
     last_name2: {
       type: String,
+      uppercase: true,
       
     },
     dni: {
@@ -44,6 +48,7 @@ const EmployeesScheme = new mongoose.Schema(
     },
     addres: {
       type: String,
+      uppercase: true,
       required: true,
     },
     phone_personal: {

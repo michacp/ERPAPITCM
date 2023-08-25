@@ -3,62 +3,76 @@ const Branches = require("../models/BranchesModel");
 const aux=require("../config/auxp")
 
 BranchesController.list = async (req, res) => {
- // console.log(req.params)
- const data=await aux.convert(req.params)
+  try {
+ const data=await aux.convert(req.query)
   const statebranches = await Branches.getby(data);
   //console.log(JSON.stringify(statebranches))
   res.json(statebranches);
+} catch (error) {
+  res.sendStatus(417);
+}
 };
 
 BranchesController.liststate = async (req, res) => {
-  // console.log(req.body)
-
+  try {
   const statebranches = await Branches.getstate();
   //console.log(servers)
   res.json(statebranches);
+} catch (error) {
+  res.sendStatus(417);
+}
 };
 
 BranchesController.new = async (req, res) => {
-   
+  try {
   const branches =await Branches.new(req.body);
   if (branches) {
-    res.json({ status: "ok", mensaje: "dato guardado" });
+    res.statusMessage = "SUCURSAL CREADA";
+    res.sendStatus(200);
   } else {
-    res.json({ status: "error", mensaje: "dato no guardado" });
+    res.statusMessage = "SUCURSAL NO CREADA";
+    res.sendStatus(304);
   }
+} catch (error) {
+  res.sendStatus(417);
+}
 };
 BranchesController.find = async (req, res) => {
   try {
-    const statebranches = await Branches.find(req.params.id);
+    const statebranches = await Branches.find(req.query.id);
     res.json(statebranches);
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    res.sendStatus(417);
   }
-  //console.log(req.body.id);
-
-  //console.log(JSON.stringify(statebranches))
 };
 BranchesController.edit = async (req, res) => {
   try {
    // console.log(req.body)
     const userone = await Branches.edit(req.body, req.body._id);
     if (userone) {
-      res.json({ status: "ok", mensaje: "dato guardado" });
+      res.statusMessage = "SUCURSAL EDITADA";
+      res.sendStatus(200);
     } else {
-      res.json({ status: "error", mensaje: "dato no guardado" });
+      res.statusMessage = "SUCURSAL NO EDITADA";
+      res.sendStatus(304);
     }
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    res.sendStatus(417);
   }
 };
 
 BranchesController.delete = async (req, res) => {
-  //console.log(req.params.id)
-  const deletebranch = await Branches.delete(req.params.id);
+  try {
+  const deletebranch = await Branches.delete(req.query);
   if (deletebranch) {
-    res.json({ status: "ok", mensaje: "dato eliminado" });
+    res.statusMessage = "SUCURSAL ELIMINADA";
+    res.sendStatus(200);
   } else {
-    res.json({ status: "error", mensaje: "dato eliminado" });
+    res.statusMessage = "SUCURSAL NO ELIMINADA";
+    res.sendStatus(304);
   }
+} catch (error) {
+  res.sendStatus(417);
+}
 };
 module.exports = BranchesController;

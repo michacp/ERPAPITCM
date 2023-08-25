@@ -3,108 +3,153 @@ const UserController = {};
 const Token = require("../helpers/auth");
 const UserModels = require("../models/UserModels");
 const bq = require("../helpers/bcryptjs");
-const aux=require("../config/auxp")
+const aux = require("../config/auxp");
 
 UserController.create = async (req, res) => {
- // console.log(req.body);
-
-  const saveuser = await UserModels.create(req.body);
-  //res.json({esta:"si"})
-  if (saveuser) {
-    res.json({ status: "ok", mensaje: "dato guardado" });
-  } else {
-    res.json({ status: "error", mensaje: "dato no guardado" });
+  try {
+    const saveuser = await UserModels.create(req.body);
+    if (saveuser) {
+      res.statusMessage = "USUARIO GUARDADO";
+      res.sendStatus(200);
+    } else {
+      res.statusMessage = "USUARIO NO GUARDADO";
+      res.sendStatus(304);
+    }
+  } catch (error) {
+    res.sendStatus(417);
   }
 };
 UserController.listemployee = async (req, res) => {
-  const data=await aux.convert(req.params)
-  const saveuser = await UserModels.getemployees(data);
-  res.json(saveuser);
+  try {
+    const data = await aux.convert(req.query);
+    const saveuser = await UserModels.getemployees(data);
+    res.json(saveuser);
+  } catch (error) {
+    res.sendStatus(417);
+  }
 };
 UserController.new = async (req, res) => {
-  const data=await aux.convert(req.params)
-  //console.log('req.body')
-  const saveuser = await UserModels.getby(data);
-  //console.log(saveuser)
-  res.json(saveuser);
+  try {
+    const data = await aux.convert(req.query);
+    const saveuser = await UserModels.getby(data);
+    res.json(saveuser);
+  } catch (error) {
+    res.sendStatus(417);
+  }
 };
 UserController.getstateuser = async (req, res) => {
-  const groupp = await UserModels.getstate();
+  try {
+    const groupp = await UserModels.getstate();
 
-  res.json(groupp);
+    res.json(groupp);
+  } catch (error) {
+    res.sendStatus(417);
+  }
 };
 UserController.getstategroup = async (req, res) => {
-  const state = await UserModels.getgroup();
+  try {
+    const state = await UserModels.getgroup();
 
-  res.json(state);
+    res.json(state);
+  } catch (error) {
+    res.sendStatus(417);
+  }
 };
 UserController.getgender = async (req, res) => {
-  const gener = await UserModels.getgener();
-  //console.log(gener)
-  res.json(gener);
+  try {
+    const gener = await UserModels.getgener();
+    //console.log(gener)
+    res.json(gener);
+  } catch (error) {
+    res.sendStatus(417);
+  }
 };
 UserController.findID = async (req, res) => {
-  // console.log(req.body)
-  const userone = await UserModels.finbdID(req.params.id);
-  //console.log(req.params)
-  res.json(userone);
+  try {
+    // console.log(req.body)
+    const userone = await UserModels.finbdID(req.query.id);
+    //console.log(req.params)
+    res.json(userone);
+  } catch (error) {
+    res.sendStatus(417);
+  }
 };
 UserController.edituser = async (req, res) => {
-  //console.log(req.body)
-  if (
-    req.body.pasword_user.length < 6 ||
-    req.body.pasword_user1.length < 6
-  ) {
-    delete req.body.pasword_user;
-    delete req.body.pasword_user1;
-    const userone = await UserModels.edituser(
-      req.body,
-      req.body._id,
-      req.body.dni
-    );
-    if (userone) {
-      res.json({ status: "ok", mensaje: "dato guardado" });
-    } else {
-      res.json({ status: "error", mensaje: "dato no guardado" });
-    }
-  } else {
-    if (req.body.pasword_user === req.body.pasword_user1) {
-      req.body.pasword_user = bq.bcrypt(req.body.pasword_user);
-     
-      const userone =  await UserModels.edituser(
-         req.body.id,
-       req.body.id._id,
-        req.body.id.dni
-       );
-
+  try {
+    //console.log(req.body)
+    if (req.body.pasword_user.length < 6 || req.body.pasword_user1.length < 6) {
+      delete req.body.pasword_user;
+      delete req.body.pasword_user1;
+      const userone = await UserModels.edituser(
+        req.body,
+        req.body._id,
+        req.body.dni
+      );
       if (userone) {
-        res.json({ status: "ok", mensaje: "dato guardado" });
+        res.statusMessage = "USUARIO EDITADO";
+        res.sendStatus(200);
       } else {
-        res.json({ status: "error", mensaje: "dato no guardado" });
+        res.statusMessage = "USUARIO NO EDITADO";
+        res.sendStatus(304);
       }
     } else {
-      res.json({ status: "error", mensaje: "dato no guardado" });
+      if (req.body.pasword_user === req.body.pasword_user1) {
+        req.body.pasword_user = bq.bcrypt(req.body.pasword_user);
+
+        const userone = await UserModels.edituser(
+          req.body.id,
+          req.body.id._id,
+          req.body.id.dni
+        );
+
+        if (userone) {
+          res.statusMessage = "USUARIO EDITADO";
+          res.sendStatus(200);
+        } else {
+          res.statusMessage = "USUARIO NO EDITADO";
+          res.sendStatus(304);
+        }
+      } else {
+        res.statusMessage = "USUARIO NO EDITADO";
+        res.sendStatus(304);
+      }
     }
+  } catch (error) {
+    res.sendStatus(417);
   }
 };
 
 UserController.deleteuser = async (req, res) => {
- // console.log(req.params)
-  const deleteuser = await UserModels.deleteuser(req.params);
-  if (deleteuser) {
-    res.json({ status: "ok", mensaje: "dato eliminado" });
-  } else {
-    res.json({ status: "error", mensaje: "dato eliminado" });
+  try {
+    //console.log(req.params)
+    const deleteuser = await UserModels.deleteuser(req.query);
+    if (deleteuser) {
+      res.statusMessage = "USUARIO ELIMINADO";
+      res.sendStatus(200);
+    } else {
+      res.statusMessage = "USUARIO NO ELIMINADO";
+      res.sendStatus(304);
+    }
+  } catch (error) {
+    res.sendStatus(417);
   }
 };
 
 UserController.login = async (req, res) => {
-  // console.log(req.body)
+  try {
+    // console.log(req.body)
 
-  //console.log(datos)
-  const s = await Token.Token(req.body);
-  // const app = await App.saveservers(req.body);
-  // console.log(s);
-  res.json(s);
+    //console.log(datos)
+    const s = await Token.Token(req.body);
+    if (s) {
+      res.status(200).json(s);
+      //res.json(s);
+    } else {
+      res.statusMessage = "CREDENCIALES INCORRECTAS";
+      res.sendStatus(428);
+    }
+  } catch (error) {
+    res.sendStatus(417);
+  }
 };
 module.exports = UserController;

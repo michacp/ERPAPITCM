@@ -5,10 +5,12 @@ const CustomersScheme = new mongoose.Schema(
   {
     first_name1: {
       type: String,
+      uppercase: true,
       required: true,
     },
     last_name1: {
       type: String,
+      uppercase: true,
       required: true,
     },
     dni: {
@@ -18,11 +20,10 @@ const CustomersScheme = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
     },
     addres: {
-      type: String,
-      required: true,
+      type: String, 
+      uppercase: true, 
     },
     phone: {
       type: String,
@@ -31,7 +32,11 @@ const CustomersScheme = new mongoose.Schema(
 
     gender: {
       type: mongoose.Types.ObjectId,
-      required: true,
+      
+    },
+    age: {
+      type: mongoose.Types.ObjectId,
+      
     },
   },
   { timestamps: true }

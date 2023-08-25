@@ -37,9 +37,24 @@ AppController.tokenstate = async (req, res) => {
  try {
   //console.log(req.headers["x-user"])
     const resultf = await auth.RenewalToken(req.headers["x-user"], req.toke);
-    res.json(resultf); 
+    if(resultf){
+      
+      if(resultf.estatustoken){
+        res.json( resultf); 
+       
+      }else{
+        res.sendStatus(200);
+      }
+      
+    }else{
+      res.statusMessage = "NECESITA INICIAR SESIÓN";
+      res.sendStatus(401);
+    }
+    
   } catch (error) {
    console.log(error) 
+         res.statusMessage = "NECESITA INICIAR SESIÓN";
+      res.sendStatus(401);
   }
 
 };

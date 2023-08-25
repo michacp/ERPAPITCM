@@ -5,16 +5,18 @@ const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const BranchesScheme = new mongoose.Schema({
   name: {
     type: String,
+    uppercase: true,
     unique: true,
     required: true,
   },
   addres: {
     type: String,
-    
+    uppercase: true,
     required: true,
   },
   reference: {
     type: String,
+    uppercase: true,
     required: true,
   },
   phone: {

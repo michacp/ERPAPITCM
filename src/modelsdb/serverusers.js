@@ -5,6 +5,7 @@ const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 const ServerusersScheme = new mongoose.Schema({
   name_server: {
     type: String,
+    uppercase: true,
     unique: true,
     required: true,
   },

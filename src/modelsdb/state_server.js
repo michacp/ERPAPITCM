@@ -4,6 +4,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const stateScheme = new mongoose.Schema({
     name: {
     type: String,
+    uppercase: true,
     unique: true,
     required: true,
   },

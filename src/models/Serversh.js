@@ -477,17 +477,12 @@ Servesh.delete = async (data) => {
   try {
     //console.log(data)
     const insertar = await modelserverusers.deleteOne({ _id: data });
-    //await db.query(
-    //"DELETE FROM serverusers where id_serverusers=?",
-    //data
-    //);
-    if (insertar === "error") {
-      console.log("ERROR");
-    } else {
-      return insertar;
-    }
+
+      return true;
+   
   } catch (e) {
     console.error(e);
+    return false;
   }
 };
 
